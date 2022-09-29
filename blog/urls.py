@@ -3,5 +3,5 @@ from . import views
 
 urlpatterns = [     #IP주소
     path('', views.index),   #IP주소/blog
-    path('<int:pk>', views.single_post_page)
+    path('<int:pk>/', views.single_post_page)
 ]
