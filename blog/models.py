@@ -8,6 +8,8 @@ class Post(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    head_image = models.ImageField(upload_to='blog/images/%Y/%m/%d/', blank=True)
+    # %Y 2022, %y 22
     # 추후 author 작성
 
     def __str__(self):
