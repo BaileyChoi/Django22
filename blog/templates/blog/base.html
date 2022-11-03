@@ -10,14 +10,14 @@
     <script src="https://kit.fontawesome.com/a56458c01c.js" crossorigin="anonymous"></script>
 </head>
 <body>
-    {% include 'blog/navbar.html' %}
+    {% include 'blog/navbar.html' %} <!-- 포함 -->
 
 <!--    <h2>Blog - 작업중입니다.</h2> -->
 
     <div class="container">
         <div class="row">
             <div class="col-md-8 col-lg-9" id="main-area">
-                {% block main_area %}
+                {% block main_area %} <!-- post_list에 블록 가져오기 -->
                 {% endblock %}
             </div>
 

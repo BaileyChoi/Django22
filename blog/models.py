@@ -3,6 +3,20 @@ from django.contrib.auth.models import User
 import os
 
 # Create your models here.
+# 숫자인 Pk 대신 읽을 수 있는 텍스트로 URL만들때
+class Category(models.Model):
+    name = models.CharField(max_length=50, unique=True)  # unique:유일한 값
+    slug = models.SlugField(max_length=200, unique=True, allow_unicode=True) # allow:한글사용가능
+
+    def __str__(self):
+        return self.name
+
+    def get_absolute_url(self):
+        return f'/blog/category/{self.slug}/'
+
+    class Meta:
+        verbose_name_plural = 'Categories' #지정해준 값으로 복수형을 출력
+
 class Post(models.Model):
     title = models.CharField(max_length=30)
     hook_text = models.CharField(max_length=100, blank=True)
@@ -14,14 +28,16 @@ class Post(models.Model):
     head_image = models.ImageField(upload_to='blog/images/%Y/%m/%d/', blank=True)
     # %Y 2022, %y 22
     file_upload = models.FileField(upload_to='blog/files/%Y/%m/%d/', blank=True)
-    # 추후 author 작성
-    author = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
+
+    author = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)  # 다대일관계 null:공란OK
+
+    category = models.ForeignKey(Category, null=True, blank=True, on_delete=models.SET_NULL)
 
 
     def __str__(self):
         return f'[{self.pk}]{self.title} :: {self.author} : {self.created_at}'
 
-    def get_absolute_url(self):
+    def get_absolute_url(self):     # 개별 고유 url - 이름표현에 사용
         return f'/blog/{self.pk}/'
 
     def get_file_name(self):
