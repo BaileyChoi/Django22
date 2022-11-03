@@ -3,6 +3,17 @@ from django.contrib.auth.models import User
 import os
 
 # Create your models here.
+class Tag(models.Model):
+    name = models.CharField(max_length=50, unique=True)  # unique:유일한 값
+    slug = models.SlugField(max_length=200, unique=True, allow_unicode=True)  # allow:한글사용가능
+
+    def __str__(self):
+        return self.name
+
+    def get_absolute_url(self):
+        return f'/blog/tag/{self.slug}/'    # tag 클릭했을때 해당태그이름 모음페이지 나오게
+
+
 # 숫자인 Pk 대신 읽을 수 있는 텍스트로 URL만들때
 class Category(models.Model):
     name = models.CharField(max_length=50, unique=True)  # unique:유일한 값
@@ -29,10 +40,11 @@ class Post(models.Model):
     # %Y 2022, %y 22
     file_upload = models.FileField(upload_to='blog/files/%Y/%m/%d/', blank=True)
 
-    author = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)  # 다대일관계 null:공란OK
+    author = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)  # 다대일관계, null:공란OK
 
-    category = models.ForeignKey(Category, null=True, blank=True, on_delete=models.SET_NULL)
+    category = models.ForeignKey(Category, null=True, blank=True, on_delete=models.SET_NULL)    # 다대일
 
+    tags = models.ManyToManyField(Tag, blank=True) # 다대다, null=true 필요없음
 
     def __str__(self):
         return f'[{self.pk}]{self.title} :: {self.author} : {self.created_at}'

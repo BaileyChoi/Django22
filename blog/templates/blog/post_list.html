@@ -1,15 +1,19 @@
 {% extends 'blog/base.html' %} <!-- 바탕이 base -->
 
 {% block main_area %}
-                <h2>Blog -
+                <h2>Blog
                     {% if category %}
-                        <span class="badge badge-secondary">{{ category }}</span>
+                        - <span class="badge badge-secondary">{{ category }}</span>
+                    {% endif %}
+                    {% if tag %}
+                        - <i class="fas fa-tag"></i>
+                        <span class="badge badge-secondary">{{ tag }} ({{ tag.post_set.count }})</span>
                     {% endif %}
                 </h2>
                 <!-- Featured blog post-->
                 {% if post_list.exists %}
                 {% for p in post_list %}
-                <div class="card mb-4" id="post-{{p.pk}}">
+                <div class="card mb-4" id="post - {{p.pk}}">
                     {% if p.head_image %}
                         <img class="card-img-top" src="{{ p.head_image.url }}" alt="{{ p }}의 head_image" />
                     {% else %}
@@ -30,6 +34,15 @@
                         <h5 class="text-muted">{{ p.hook_text }}</h5>
                         {% endif %}
                         <p class="card-text">{{ p.content | truncatechars:100}}</p> <!-- trunc:첫 100문자만 출력 (truncatewords:단어) -->
+                        {% if p.tags.exists %}
+                            <i class="fas fa-tag"></i>
+                            {% for t in p.tags.iterator %}
+                                <span class="badge badge-pill badge-light">
+                                    <a href="{{ t.get_absolute_url }}">{{ t }}</a>
+                                </span>
+                            {% endfor %}
+                            <br><br>
+                        {% endif %}
                         <a class="btn btn-primary" href="{{ p.get_absolute_url }}">Read more →</a>
                     </div>
                     <div class="card-footer">
