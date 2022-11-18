@@ -23,6 +23,7 @@ urlpatterns = [     # IP주소/
     path('admin/', admin.site.urls),  # IP주소/admin
     path('blog/', include('blog.urls')),  #IP주소/blog
     path('', include('single_pages.urls')), #IP주소/
+    path('accounts/', include('allauth.urls'))
 ]
 
 # 미디어 파일 업로드
