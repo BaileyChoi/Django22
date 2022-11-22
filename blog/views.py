@@ -13,7 +13,7 @@ from django.shortcuts import get_object_or_404
 class PostUpdate(LoginRequiredMixin, UpdateView):
     model = Post
     fields = ['title', 'hook_text', 'content', 'head_image', 'file_upload', 'category'] # , 'tags'
-
+    # 템플릿 post_form
     template_name = 'blog/post_update_form.html'
 
     def dispatch(self, request, *args, **kwargs):
@@ -54,7 +54,7 @@ class PostCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     model = Post
     fields = ['title', 'hook_text', 'content', 'head_image', 'file_upload', 'category']  # , 'tags'
     # 템플릿 : 모델명_form.html
-
+    # 템플릿 post_form
     def test_func(self):
         return self.request.user.is_superuser or self.request.user.is_staff
 
@@ -151,6 +151,18 @@ def new_comment(request, pk):
             return redirect(post.get_absolute_url())
     else:   # 로그인 하지 않은 사용자
         raise PermissionDenied
+
+class CommentUpdate(LoginRequiredMixin, UpdateView):
+    model = Comment
+    form_class = CommentForm
+    # CreateView, UpdateView 등은 form을 사용하면
+    # 템플릿이 모델명_form로 자동으로 만들어짐 : comment_form
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated and request.user == self.get_object().author:
+            return super(CommentUpdate, self).dispatch(request, *args, **kwargs)
+        else:
+            raise PermissionDenied
 
 
 # FBV 스타일
