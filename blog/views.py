@@ -88,6 +88,7 @@ class PostCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
 class PostList(ListView):
     model = Post
     ordering = '-pk'  # 최신 등록순으로 나열
+    paginate_by = 5   # 한페이지에 게시물 5개 보여줌
     # 템플릿 없는 이유? 모델명_List.html : post_list.html 가 이미 자동으로 생성됐기 때문
     # 파라미터 모델명_list : post_list
 
