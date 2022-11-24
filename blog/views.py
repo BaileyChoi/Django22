@@ -6,6 +6,7 @@ from django.core.exceptions import PermissionDenied
 from django.utils.text import slugify
 from .forms import CommentForm
 from django.shortcuts import get_object_or_404
+from django.db.models import Q
 
 # Create your views here.
 
@@ -111,6 +112,23 @@ class PostDetail(DetailView):
         context['comment_form'] = CommentForm
         return context
 
+class PostSearch(PostList):  # ListView 상속, post_list, post_list.html 자동으로 호출
+    paginate_by = None  # 한 페이지당이 아닌 전체 포스트에서 검색하기 위해
+
+    def get_queryset(self): # 검색결과를 얻는 함수
+        q = self.kwargs['q']
+        post_list = Post.objects.filter(
+            Q(title__contains=q) | Q(tags__name__contains=q)
+        ).distinct()  # title과 tags 둘 다에 있는 경우 한번만
+        return post_list
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(PostSearch, self).get_context_data()
+        q = self.kwargs['q']
+        context['search_info'] = f'Search : {q} ({self.get_queryset().count()})'
+        return context
+
+
 def category_page(request,slug):
     if slug == 'no_category':
         category = '미분류'
@@ -164,7 +182,6 @@ class CommentUpdate(LoginRequiredMixin, UpdateView):
             return super(CommentUpdate, self).dispatch(request, *args, **kwargs)
         else:
             raise PermissionDenied
-
 
 # FBV 스타일
 #def index(request):
