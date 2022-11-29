@@ -62,6 +62,12 @@ class Post(models.Model):
         # c.xlsx -> c / xlsx
         # a.b.c.txt -> a[0] / b[1] / c[2] / txt[-1]
 
+    def get_avatar_url(self):
+        if self.author.socialaccount_set.exists():
+            return self.author.socialaccount_set.first().get_avatar_url()   #google의 이미지 부르기
+        else:
+            return 'https://dummyimage.com/50x50/ced4da/6c757d.jpg'
+
 class Comment(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
